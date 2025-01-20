@@ -437,11 +437,433 @@ Process multiple samples using a manifest:
 # sample_id,input_folder,params_file
 # sample1,/data/sample1,params1.json
 # sample2,/data/sample2,params2.json
+# sample3,/data/sample3,mm10,false
 
 while IFS=, read -r sample_id folder params; do
-    python ica_cli_workflow.py "$folder" "My Project" "DRAGEN Pipeline" \
-        ./results/$sample_id --params-file $params
+    # Skip header
+    [[ $sample_id == "sample_id" ]] && continue
+    
+    # Create parameters dynamically
+    python << EOF
+import json
+params = {
+    "sample-id": "${sample_id}",
+    "reference-tar": f"/references/${ref}/{ref}.fa",
+    "output-directory": "/output",
+    "enable-map-align": True,
+    "enable-variant-caller": True,
+    "enable-duplicate-marking": True
+}
+if "${paired}" == "true":
+    params["pe-mode"] = True
+with open("${sample_id}_params.json", "w") as f:
+    json.dump(params, f, indent=4)
+EOF
+
+    # Run analysis
+    python ica_cli_workflow.py "$folder" "Batch Project" "DRAGEN Pipeline" \
+        "./results/${sample_id}" \
+        --folder-name "${sample_id}_analysis" \
+        --params-file "${sample_id}_params.json" &
 done < samples.txt
+```
+
+## Example Workflows
+
+### 1. Basic DNA Analysis
+Process a single DNA sample:
+```bash
+# Directory structure:
+# /data/
+#   ├── sample1/
+#   │   ├── read1.fastq.gz
+#   │   └── read2.fastq.gz
+#   └── dragen_params.json
+
+# Upload and analyze
+python ica_cli_workflow.py /data/sample1 "DNA Project" "DRAGEN Pipeline" ./results \
+    --folder-name "sample1_jan2025" \
+    --params-file /data/dragen_params.json
+```
+
+### 2. RNA-Seq Analysis
+Process RNA-seq data with QC:
+```bash
+# First, create RNA parameters
+cat > rna_params.json << EOL
+{
+    "sample-id": "rna_sample1",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "annotation-file": "/reference-data/hg38/genes.gtf",
+    "enable-rna": true,
+    "enable-rna-quantification": true,
+    "enable-rna-gene-fusion": true,
+    "qc-coverage-region-1": "/reference-data/hg38/exons.bed",
+    "output-directory": "/output",
+    "enable-duplicate-marking": true,
+    "enable-sort": true
+}
+EOL
+
+# Run RNA analysis
+python ica_cli_workflow.py ./rna_data "RNA Project" "RNA Pipeline" ./results \
+    --params-file rna_params.json \
+    --analysis-name "RNA_Analysis_Jan2025"
+```
+
+### 3. Batch Processing with Sample Sheet
+Process multiple samples from a sample sheet:
+```bash
+# sample_sheet.csv:
+# sample_id,data_folder,reference,paired
+# sample1,/data/sample1,hg38,true
+# sample2,/data/sample2,hg19,true
+# sample3,/data/sample3,mm10,false
+
+#!/bin/bash
+while IFS=, read -r sample_id folder ref paired; do
+    # Skip header
+    [[ $sample_id == "sample_id" ]] && continue
+    
+    # Create parameters dynamically
+    python << EOF
+import json
+params = {
+    "sample-id": "${sample_id}",
+    "reference-tar": f"/references/${ref}/{ref}.fa",
+    "output-directory": "/output",
+    "enable-map-align": True,
+    "enable-variant-caller": True,
+    "enable-duplicate-marking": True
+}
+if "${paired}" == "true":
+    params["pe-mode"] = True
+with open("${sample_id}_params.json", "w") as f:
+    json.dump(params, f, indent=4)
+EOF
+
+    # Run analysis
+    python ica_cli_workflow.py "$folder" "Batch Project" "DRAGEN Pipeline" \
+        "./results/${sample_id}" \
+        --folder-name "${sample_id}_analysis" \
+        --params-file "${sample_id}_params.json" &
+done < sample_sheet.csv
+```
+
+### 4. Joint Calling Workflow
+Perform joint variant calling on multiple samples:
+```bash
+# 1. First, run individual GVCF generation
+for sample in sample1 sample2 sample3; do
+    cat > "${sample}_params.json" << EOL
+{
+    "sample-id": "${sample}",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-map-align": true,
+    "enable-variant-caller": true,
+    "vc-emit-ref-confidence": "GVCF",
+    "vc-enable-joint-genotyping": false
+}
+EOL
+
+    python ica_cli_workflow.py "./data/${sample}" "Joint Project" "DRAGEN Pipeline" \
+        "./gvcf/${sample}" \
+        --params-file "${sample}_params.json"
+done
+
+# 2. Then perform joint calling
+cat > joint_calling_params.json << EOL
+{
+    "enable-joint-genotyping": true,
+    "output-directory": "/output/joint_called",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "variant-caller-prefix": "joint_variants",
+    "gvcf-file": "/input/sample1.hard-filtered.gvcf.gz,/input/sample2.hard-filtered.gvcf.gz,/input/sample3.hard-filtered.gvcf.gz"
+}
+EOL
+
+python ica_cli_pipeline.py "Joint Project" "DRAGEN Joint Calling" \
+    --params-file joint_calling_params.json
+```
+
+### 5. Tumor-Normal Analysis
+Process matched tumor-normal samples:
+```bash
+# Create tumor-normal parameters
+cat > tumor_normal_params.json << EOL
+{
+    "tumor-sample-id": "tumor_sample1",
+    "normal-sample-id": "normal_sample1",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-map-align": true,
+    "enable-variant-caller": true,
+    "vc-enable-somatic-mode": true,
+    "vc-enable-germline-mode": true,
+    "dbsnp": "/reference-data/hg38/dbsnp.vcf.gz",
+    "cosmic": "/reference-data/hg38/cosmic.vcf.gz"
+}
+EOL
+
+# Upload and process normal
+python ica_cli_upload.py ./normal_data "Cancer Project" \
+    --folder-name "normal_sample1"
+
+# Upload and process tumor
+python ica_cli_upload.py ./tumor_data "Cancer Project" \
+    --folder-name "tumor_sample1"
+
+# Run tumor-normal analysis
+python ica_cli_pipeline.py "Cancer Project" "DRAGEN Somatic Pipeline" \
+    --params-file tumor_normal_params.json \
+    --analysis-name "Tumor_Normal_Jan2025"
+```
+
+## Advanced Error Handling
+
+### 1. Network Issues
+Handle unstable connections:
+```bash
+# Retry uploads with timeout
+MAX_RETRIES=3
+RETRY_DELAY=60
+
+upload_with_retry() {
+    local attempt=1
+    while [ $attempt -le $MAX_RETRIES ]; do
+        echo "Upload attempt $attempt of $MAX_RETRIES"
+        python ica_cli_upload.py "$1" "$2" && return 0
+        
+        attempt=$((attempt + 1))
+        [ $attempt -le $MAX_RETRIES ] && sleep $RETRY_DELAY
+    done
+    return 1
+}
+
+# Use the retry function
+upload_with_retry ./data "My Project" || echo "Upload failed after $MAX_RETRIES attempts"
+```
+
+### 2. Pipeline Monitoring
+Monitor pipeline progress with notifications:
+```python
+import time
+import subprocess
+import smtplib
+from email.message import EmailMessage
+
+def monitor_pipeline(project, analysis_id, email):
+    while True:
+        result = subprocess.run([
+            'python', 'ica_cli_download.py',
+            project, analysis_id, '--status-only'
+        ], capture_output=True, text=True)
+        
+        status = result.stdout.strip()
+        
+        if status == 'Completed':
+            send_notification(email, 'Pipeline Complete', 
+                            f'Analysis {analysis_id} completed successfully')
+            break
+        elif status == 'Failed':
+            send_notification(email, 'Pipeline Failed',
+                            f'Analysis {analysis_id} failed')
+            break
+            
+        time.sleep(300)  # Check every 5 minutes
+
+def send_notification(to_email, subject, body):
+    msg = EmailMessage()
+    msg.set_content(body)
+    msg['Subject'] = subject
+    msg['From'] = "ica-monitor@example.com"
+    msg['To'] = to_email
+    
+    # Configure your SMTP server
+    with smtplib.SMTP('smtp.example.com') as server:
+        server.send_message(msg)
+
+# Use the monitoring function
+monitor_pipeline("My Project", "analysis_123", "user@example.com")
+```
+
+### 3. Resource Management
+Monitor and manage system resources:
+```python
+import psutil
+import time
+
+def check_resources():
+    cpu_percent = psutil.cpu_percent()
+    mem_percent = psutil.virtual_memory().percent
+    disk_percent = psutil.disk_usage('/').percent
+    
+    return all([
+        cpu_percent < 90,
+        mem_percent < 90,
+        disk_percent < 90
+    ])
+
+def run_with_resource_check(cmd):
+    while not check_resources():
+        print("System resources too high, waiting...")
+        time.sleep(300)
+    
+    subprocess.run(cmd)
+
+# Use resource checking
+run_with_resource_check([
+    'python', 'ica_cli_workflow.py',
+    './large_data', 'My Project', 'DRAGEN Pipeline', './results'
+])
+```
+
+## Pipeline Parameter Examples
+
+### 1. DRAGEN WGS with QC
+```json
+{
+    "sample-id": "wgs_sample1",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-map-align": true,
+    "enable-sort": true,
+    "enable-duplicate-marking": true,
+    "enable-variant-caller": true,
+    "qc-coverage-region-1": "/reference-data/hg38/coverage.bed",
+    "qc-coverage-reports-1": "full_res",
+    "vc-enable-gatk-acceleration": true,
+    "vc-target-bed": "/reference-data/hg38/targets.bed",
+    "vc-target-bed-padding": 100,
+    "vc-enable-vcf-output": true,
+    "vc-enable-gvcf-output": true,
+    "vc-max-reads-per-active-region": 10000,
+    "vc-enable-phasing": true
+}
+```
+
+### 2. DRAGEN RNA with Fusion Detection
+```json
+{
+    "sample-id": "rna_fusion",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-rna": true,
+    "annotation-file": "/reference-data/hg38/genes.gtf",
+    "enable-rna-quantification": true,
+    "enable-rna-gene-fusion": true,
+    "enable-sort": true,
+    "enable-duplicate-marking": true,
+    "enable-rna-gc-bias": true,
+    "rna-gene-fusion-min-support": 2,
+    "rna-gene-fusion-min-read-mate-score": 30,
+    "rna-gene-fusion-min-read-mate-gap": 100000,
+    "rna-gene-fusion-min-read-mate-diff": 100,
+    "rna-gene-fusion-min-read-pair-support": 2
+}
+```
+
+### 3. DRAGEN Methylation
+```json
+{
+    "sample-id": "methylation_sample",
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-methylation-calling": true,
+    "methylation-protocol": "directional",
+    "enable-sort": true,
+    "enable-duplicate-marking": true,
+    "methylation-min-qual": 20,
+    "methylation-min-read-depth": 5,
+    "methylation-max-read-depth": 1000,
+    "methylation-min-base-qual": 10,
+    "methylation-cytosine-report": true,
+    "methylation-enable-m-bias": true,
+    "methylation-enable-qc": true
+}
+```
+
+## Performance Optimization
+
+### 1. Memory Usage
+Optimize memory for large datasets:
+```python
+def calculate_batch_size(folder_size_gb):
+    """Calculate optimal batch size based on folder size"""
+    available_mem = psutil.virtual_memory().available / (1024**3)  # GB
+    
+    # Aim to use max 75% of available memory
+    target_mem = available_mem * 0.75
+    
+    # Estimate 1.5GB memory needed per 1GB of data
+    batch_size_gb = min(folder_size_gb, target_mem / 1.5)
+    
+    return max(1, int(batch_size_gb))
+
+def upload_in_batches(folder, project):
+    folder_size = sum(f.stat().st_size for f in Path(folder).rglob('*')) / (1024**3)
+    batch_size = calculate_batch_size(folder_size)
+    
+    # Split upload into batches
+    files = list(Path(folder).rglob('*'))
+    for i in range(0, len(files), batch_size):
+        batch = files[i:i + batch_size]
+        # Process batch
+        ...
+```
+
+### 2. Parallel Processing
+Optimize concurrent operations:
+```python
+import concurrent.futures
+import multiprocessing
+
+def process_samples_parallel(samples, max_workers=None):
+    if max_workers is None:
+        max_workers = multiprocessing.cpu_count() - 1
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for sample in samples:
+            future = executor.submit(
+                subprocess.run,
+                [
+                    'python', 'ica_cli_workflow.py',
+                    sample['input'], sample['project'],
+                    sample['pipeline'], sample['output'],
+                    '--params-file', sample['params']
+                ]
+            )
+            futures.append(future)
+        
+        # Wait for completion
+        concurrent.futures.wait(futures)
+```
+
+### 3. Storage Management
+Monitor and manage storage:
+```python
+def check_storage(path, required_gb):
+    """Check if sufficient storage is available"""
+    stats = psutil.disk_usage(path)
+    available_gb = stats.free / (1024**3)
+    
+    if available_gb < required_gb:
+        raise RuntimeError(
+            f"Insufficient storage: {available_gb:.1f}GB available, "
+            f"{required_gb:.1f}GB required"
+        )
+
+def estimate_storage_needs(input_size_gb):
+    """Estimate storage needs for pipeline"""
+    # DRAGEN typically needs 5x input size
+    return input_size_gb * 5
+
+# Use storage checking
+input_size = 100  # GB
+required_space = estimate_storage_needs(input_size)
+check_storage('./results', required_space)
 ```
 
 ## Development
