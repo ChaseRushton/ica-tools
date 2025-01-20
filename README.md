@@ -16,8 +16,8 @@ python ica_folder_upload.py /path/to/folder --project-id YOUR_PROJECT_ID
 python ica_folder_upload.py /path/to/folder --project-id YOUR_PROJECT_ID --pipeline-id YOUR_PIPELINE_ID --pipeline-params '{"param1": "value1"}'
 ```
 
-### 2. ICA Results Downloader
-`ica_download_results.py` - Download results from an ICA analysis (e.g., DRAGEN pipeline results).
+### 2. ICA Results Downloader (API-based)
+`ica_download_results.py` - Download results from an ICA analysis using the API.
 
 #### Usage
 ```bash
@@ -30,10 +30,6 @@ python ica_download_results.py --project-id YOUR_PROJECT_ID --analysis-id YOUR_A
 
 ### 3. ICA CLI Folder Upload
 `ica_cli_upload.py` - Upload a folder to ICA using the ICA Command Line Interface (CLI).
-
-#### Prerequisites
-- ICA CLI must be installed and configured
-- Installation instructions: https://help.ica.illumina.com/command-line/latest/install
 
 #### Usage
 ```bash
@@ -58,23 +54,47 @@ python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "input_folder_name" \
     --analysis-name "DRAGEN Analysis Jan 2025"
 ```
 
-#### Example Workflow
-1. Upload data:
+### 5. ICA CLI Results Downloader
+`ica_cli_download.py` - Download analysis results using the ICA Command Line Interface.
+
+#### Usage
+```bash
+# Wait for analysis to complete and download results
+python ica_cli_download.py "My Project" ANALYSIS_ID ./results
+
+# Download results from completed analysis
+python ica_cli_download.py "My Project" ANALYSIS_ID ./results --no-wait
+
+# Customize polling interval when waiting
+python ica_cli_download.py "My Project" ANALYSIS_ID ./results --polling-interval 120
+```
+
+## Complete CLI Workflow Example
+
+Here's a complete example of running a DRAGEN analysis using the CLI-based tools:
+
+1. Upload your data:
 ```bash
 python ica_cli_upload.py ./sequencing_data "My Project" --folder-name "Sample_Jan2025"
 ```
 
-2. Start DRAGEN pipeline:
+2. Start the DRAGEN pipeline:
 ```bash
 python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "Sample_Jan2025" \
     --params-file examples/dragen_params.json \
     --analysis-name "DRAGEN Analysis Jan2025"
 ```
 
-3. Download results:
+3. Download the results when complete:
 ```bash
-python ica_download_results.py --project-id PROJECT_ID --analysis-id ANALYSIS_ID --output-dir ./results --wait-for-completion
+python ica_cli_download.py "My Project" ANALYSIS_ID ./results
 ```
+
+The download script will:
+- Monitor the pipeline status
+- Wait for completion
+- Automatically download results to the specified directory
+- Provide progress updates
 
 ## Setup
 
