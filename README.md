@@ -44,6 +44,38 @@ python ica_cli_upload.py /path/to/folder "My Project Name"
 python ica_cli_upload.py /path/to/folder "My Project Name" --folder-name "Custom Folder Name"
 ```
 
+### 4. ICA CLI Pipeline Runner
+`ica_cli_pipeline.py` - Start a pipeline (e.g., DRAGEN) using the ICA Command Line Interface.
+
+#### Usage
+```bash
+# Basic usage
+python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "input_folder_name"
+
+# With parameters file and custom analysis name
+python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "input_folder_name" \
+    --params-file params.json \
+    --analysis-name "DRAGEN Analysis Jan 2025"
+```
+
+#### Example Workflow
+1. Upload data:
+```bash
+python ica_cli_upload.py ./sequencing_data "My Project" --folder-name "Sample_Jan2025"
+```
+
+2. Start DRAGEN pipeline:
+```bash
+python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "Sample_Jan2025" \
+    --params-file examples/dragen_params.json \
+    --analysis-name "DRAGEN Analysis Jan2025"
+```
+
+3. Download results:
+```bash
+python ica_download_results.py --project-id PROJECT_ID --analysis-id ANALYSIS_ID --output-dir ./results --wait-for-completion
+```
+
 ## Setup
 
 1. Install requirements:
@@ -69,6 +101,11 @@ export ICA_BASE_URL='https://ica.illumina.com/ica/rest'
 - ICA SDK (for API-based scripts)
 - ICA CLI (for CLI-based scripts)
 - Valid ICA credentials
+
+## Examples
+Check the `examples/` directory for:
+- Sample parameter files for DRAGEN pipelines
+- Example workflows and scripts
 
 ## Security Note
 Never commit your API keys or sensitive credentials to the repository. Always use environment variables for sensitive information.

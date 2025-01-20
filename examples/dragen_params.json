@@ -1,0 +1,8 @@
+{
+    "reference-tar": "/reference-data/hg38/hg38.fa",
+    "output-directory": "/output",
+    "enable-map-align": true,
+    "enable-map-align-output": true,
+    "enable-duplicate-marking": true,
+    "enable-variant-caller": true
+}
