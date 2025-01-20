@@ -90,18 +90,21 @@ graph LR
 ```mermaid
 %%{init: {'theme': 'dark'}}%%
 graph TD
-    subgraph Client["Client"]
-        A[CLI Tools] --> B[API Client]
-        C[Config] --> B
+    subgraph Client
+        A[CLI Tools]
+        B[API Client]
+        C[Config]
+        A --> B
+        C --> B
     end
     
-    subgraph ICA["ICA"]
+    subgraph ICA
         D[Data Storage]
         E[Pipeline Engine]
         F[Results]
     end
     
-    subgraph PCD["PCD"]
+    subgraph PCD
         G[Data Processing]
         H[Analysis]
         I[Reporting]
@@ -118,11 +121,13 @@ graph TD
     
     style A fill:#0366d6,stroke:#58a6ff,stroke-width:2px,color:#ffffff
     style B fill:#28a745,stroke:#3fb950,stroke-width:2px,color:#ffffff
-    style D,E,F fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
-    style G,H,I fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
-    
-    classDef subgraph-c fill:#161b22,stroke:#30363d,stroke-width:2px;
-    class Client,ICA,PCD subgraph-c;
+    style D fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
+    style E fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
+    style F fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
+    style G fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
+    style H fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
+    style I fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
+    style C fill:#6f42c1,stroke:#8957e5,stroke-width:2px,color:#ffffff
 ```
 
 ## Performance Metrics
