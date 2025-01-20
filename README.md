@@ -19,6 +19,7 @@ A collection of Python scripts for interacting with Illumina Connected Analytics
 - [Advanced Usage](#advanced-usage)
 - [Development](#development)
 - [Additional Utility Scripts](#additional-utility-scripts)
+- [Development Timeline](#development-timeline)
 
 ## Features
 
@@ -853,6 +854,54 @@ pre-commit install
 # Run hooks
 pre-commit run --all-files
 ```
+
+## Development Timeline
+
+### v1.0.0 (January 2025)
+- Initial release with core functionality
+- Basic CLI tools for upload, download, and pipeline execution
+- Simple workflow management
+- Basic error handling
+
+### v1.1.0 (January 2025)
+- Enhanced documentation with comprehensive examples
+- Advanced pipeline templates
+  - DRAGEN Enrichment (Exome)
+  - Single-Cell RNA
+  - COVID-19 Analysis
+- Improved error handling and recovery mechanisms
+
+### v1.2.0 (January 2025)
+- Added utility scripts:
+  - Project data management (`ica_project_manager.py`)
+  - Pipeline monitoring (`ica_monitor.py`)
+  - Batch processing (`ica_batch_processor.py`)
+- Email and Slack notifications
+- Storage and cost monitoring
+- Parallel processing capabilities
+
+### Upcoming Features (Q1 2025)
+- [ ] Web interface for pipeline monitoring
+- [ ] Integration with cloud storage providers
+- [ ] Advanced data validation and QC metrics
+- [ ] Custom pipeline template generator
+- [ ] Automated performance optimization
+
+### Future Roadmap (2025)
+- **Q2 2025**
+  - Machine learning for resource optimization
+  - Automated cost forecasting
+  - Enhanced security features
+  
+- **Q3 2025**
+  - Multi-project orchestration
+  - Custom workflow designer
+  - Real-time collaboration features
+  
+- **Q4 2025**
+  - Integration with additional cloud platforms
+  - Advanced analytics dashboard
+  - Automated pipeline recommendations
 
 ## Additional Utility Scripts
 
