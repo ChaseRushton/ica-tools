@@ -1,7 +1,252 @@
-# ICA Tools
+# ICA Tools 
 
-A collection of command-line tools and utilities for working with Illumina Connected Analytics (ICA).
-These tools simplify common tasks such as data upload, pipeline execution, and results download.
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/ChaseRushton/ica-tools)
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](docs/)
+
+> A powerful toolkit for automating Illumina Connected Analytics (ICA) workflows, designed for seamless integration with [Penn Medicine's Division of Precision and Computational Diagnostics (PCD)](https://pathology.med.upenn.edu/clinical-services/precision-and-computational-diagnostics#:~:text=The%20Division%20of%20Precision%20and,and%20the%20Rittenhouse%20Molecular%20Laboratory). The PCD division provides comprehensive molecular and genomic testing services, including next-generation sequencing, and this toolkit streamlines the integration between ICA and PCD's diagnostic workflows.
+
+<div align="center">
+  <img src="docs/images/ica-tools-banner.png" alt="ICA Tools Banner" width="800"/>
+</div>
+
+---
+
+##  Quick Navigation
+- [Features](#-features)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Development Timeline](#-development-timeline)
+- [Validation Plan](#-validation-plan)
+- [Documentation](#-documentation)
+- [Contributing](#-contributing)
+
+---
+
+##  Features
+
+### Core Capabilities
+- **Automated Data Upload**
+  - Smart folder structure validation
+  - Robust session management
+  - Real-time progress tracking
+  - Intelligent error handling
+
+- **Automated Results Download**
+  - Continuous status monitoring
+  - Efficient incremental downloads
+  - Reliable checksum verification
+  - Organized output management
+
+- **Pipeline Automation**
+  - Advanced parameter validation
+  - Resource optimization
+  - Real-time status updates
+  - Automated error recovery
+
+### Integration Features
+- **PCD Compatibility**
+  - Seamless data transformation
+  - Event-driven architecture
+  - Robust error management
+  - Real-time synchronization
+
+---
+
+##  Development Timeline
+
+### Current Release
+<table>
+<tr>
+<th>Version</th>
+<th>Focus</th>
+<th>Key Features</th>
+</tr>
+<tr>
+<td>**v1.0.0**<br/><em>January 2025</em></td>
+<td>Upload Automation</td>
+<td>
+• Folder validation<br/>
+• Session management<br/>
+• Progress tracking<br/>
+• Error handling
+</td>
+</tr>
+<tr>
+<td>**v1.1.0**<br/><em>January 2025</em></td>
+<td>Download Automation</td>
+<td>
+• Status monitoring<br/>
+• Incremental downloads<br/>
+• Checksum verification<br/>
+• Output organization
+</td>
+</tr>
+<tr>
+<td>**v1.2.0**<br/><em>January 2025</em></td>
+<td>Pipeline Automation</td>
+<td>
+• Parameter validation<br/>
+• Resource monitoring<br/>
+• Status tracking<br/>
+• Error recovery
+</td>
+</tr>
+</table>
+
+### Upcoming Releases
+<table>
+<tr>
+<th>Version</th>
+<th>Focus</th>
+<th>Key Features</th>
+</tr>
+<tr>
+<td>**v1.3.0**<br/><em>February 2025</em></td>
+<td>PCD Integration Analysis</td>
+<td>
+• Integration mapping<br/>
+• Data flow analysis<br/>
+• Requirements mapping<br/>
+• Interface design
+</td>
+</tr>
+<tr>
+<td>**v1.4.0**<br/><em>February 2025</em></td>
+<td>PCD Middleware</td>
+<td>
+• Data transformation<br/>
+• API compatibility<br/>
+• Event handling<br/>
+• Error management
+</td>
+</tr>
+</table>
+
+---
+
+##  Validation Plan
+
+### Phase Overview
+```mermaid
+graph LR
+    A[Upload Automation] --> B[Download Automation]
+    B --> C[Pipeline Automation]
+    C --> D[PCD Integration]
+    D --> E[Middleware Validation]
+    E --> F[Production Release]
+```
+
+### Testing Phases
+<table>
+<tr>
+<th>Phase</th>
+<th>Focus Areas</th>
+<th>Success Criteria</th>
+</tr>
+<tr>
+<td>**Upload Automation**</td>
+<td>
+• Structure validation<br/>
+• File integrity<br/>
+• Network resilience<br/>
+• Error recovery
+</td>
+<td>
+ 100% upload success rate<br/>
+Validated file integrity<br/>
+Error recovery within 5s<br/>
+Network retry success
+</td>
+</tr>
+<tr>
+<td>**Download Automation**</td>
+<td>
+• Results verification<br/>
+• Incremental downloads<br/>
+• Space management<br/>
+• Error handling
+</td>
+<td>
+Checksum verification<br/>
+Resume interrupted downloads<br/>
+Space requirement checks<br/>
+Clean error recovery
+</td>
+</tr>
+<tr>
+<td>**Pipeline Automation**</td>
+<td>
+• Parameter validation<br/>
+• Resource monitoring<br/>
+• Status tracking<br/>
+• Error recovery
+</td>
+<td>
+Valid parameter sets<br/>
+Resource optimization<br/>
+Real-time status<br/>
+Automated recovery
+</td>
+</tr>
+</table>
+
+---
+
+##  Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/ChaseRushton/ica-tools.git
+
+# Navigate to the project
+cd ica-tools
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+export ICA_API_KEY="your-api-key"
+export ICA_BASE_URL="your-base-url"
+```
+
+---
+
+##  Quick Start
+
+```bash
+# Upload data and run pipeline
+python ica_cli_workflow.py ./data "My Project" "DRAGEN Pipeline" ./results \
+    --params-file params.json \
+    --monitor \
+    --notify email@example.com
+```
+
+For more examples, see our [documentation](docs/).
+
+---
+
+##  Documentation
+
+Detailed documentation is available in the [docs](docs/) directory:
+- [Installation Guide](docs/installation.md)
+- [API Reference](docs/api.md)
+- [Configuration Guide](docs/configuration.md)
+- [Examples](docs/examples.md)
+- [Troubleshooting](docs/troubleshooting.md)
+
+---
+
+##  Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+---
+
+##  License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Development Timeline
 
@@ -184,6 +429,7 @@ These tools simplify common tasks such as data upload, pipeline execution, and r
 Run an entire analysis pipeline in one command:
 ```bash
 python ica_cli_workflow.py ./sequencing_data "My Project" "DRAGEN Pipeline" ./results \
+    --folder-name "Sample_Jan2025" \
     --params-file examples/dragen_params.json
 ```
 
@@ -191,10 +437,11 @@ python ica_cli_workflow.py ./sequencing_data "My Project" "DRAGEN Pipeline" ./re
 Or run each step separately:
 ```bash
 # Upload data
-python ica_cli_upload.py ./sequencing_data "My Project"
+python ica_cli_upload.py ./data "My Project" --folder-name "Custom_Name"
 
 # Run pipeline
-python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "sequencing_data"
+python ica_cli_pipeline.py "My Project" "Pipeline Name" "Folder_Name" \
+    --params-file params.json
 
 # Download results
 python ica_cli_download.py "My Project" ANALYSIS_ID ./results
@@ -283,7 +530,7 @@ export ICA_BASE_URL='https://ica.illumina.com/ica/rest'  # Optional
 2. **Run Analysis**
    ```bash
    python ica_cli_workflow.py ./sequencing_data "My Project" "DRAGEN Pipeline" ./results \
-       --folder-name "Sample_Jan2025" \
+       --folder-name "${sample}_analysis" \
        --params-file examples/dragen_params.json \
        --analysis-name "DRAGEN Analysis Jan2025"
    ```
