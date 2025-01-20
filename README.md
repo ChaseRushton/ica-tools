@@ -1,4 +1,4 @@
-# ICA Tools 
+# ICA Tools 🧬
 
 [![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/ChaseRushton/ica-tools)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
@@ -6,10 +6,6 @@
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](docs/)
 
 > A powerful toolkit for automating Illumina Connected Analytics (ICA) workflows, designed for seamless integration with [Penn Medicine's Division of Precision and Computational Diagnostics (PCD)](https://pathology.med.upenn.edu/clinical-services/precision-and-computational-diagnostics#:~:text=The%20Division%20of%20Precision%20and,and%20the%20Rittenhouse%20Molecular%20Laboratory). The PCD division provides comprehensive molecular and genomic testing services, including next-generation sequencing, and this toolkit streamlines the integration between ICA and PCD's diagnostic workflows.
-
-<div align="center">
-  <img src="docs/images/ica-tools-banner.png" alt="ICA Tools Banner" width="800"/>
-</div>
 
 ---
 
