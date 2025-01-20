@@ -18,6 +18,7 @@ A collection of Python scripts for interacting with Illumina Connected Analytics
 - [Pipeline Templates](#pipeline-templates)
 - [Advanced Usage](#advanced-usage)
 - [Development](#development)
+- [Additional Utility Scripts](#additional-utility-scripts)
 
 ## Features
 
@@ -852,6 +853,121 @@ pre-commit install
 # Run hooks
 pre-commit run --all-files
 ```
+
+## Additional Utility Scripts
+
+### Project Data Management
+
+The `ica_project_manager.py` script helps manage project data and storage:
+
+```bash
+# List all data in project
+python ica_project_manager.py "My Project" --action list
+
+# List data older than 30 days
+python ica_project_manager.py "My Project" --action list --days 30
+
+# Clean up old data (dry run)
+python ica_project_manager.py "My Project" --action cleanup --days 30 --dry-run
+
+# Archive old data
+python ica_project_manager.py "My Project" --action archive \
+    --days 30 --archive-dir /path/to/archive
+
+# Check storage usage
+python ica_project_manager.py "My Project" --action storage
+```
+
+### Pipeline Monitoring
+
+The `ica_monitor.py` script provides monitoring and notifications:
+
+```bash
+# Monitor a specific pipeline
+python ica_monitor.py "My Project" --config monitor_config.yaml \
+    --action pipeline --analysis-id analysis_123
+
+# Monitor storage usage
+python ica_monitor.py "My Project" --config monitor_config.yaml \
+    --action storage --threshold 90
+
+# Monitor project costs
+python ica_monitor.py "My Project" --config monitor_config.yaml \
+    --action costs --threshold 1000
+```
+
+Example monitor configuration (`monitor_config.yaml`):
+```yaml
+# Email configuration
+email_to: "user@example.com"
+smtp_host: "smtp.gmail.com"
+smtp_port: 587
+smtp_user: "your-email@gmail.com"
+smtp_pass: "${SMTP_PASSWORD}"  # Set this in environment variable
+
+# Slack configuration (optional)
+slack_webhook: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+```
+
+### Batch Processing
+
+The `ica_batch_processor.py` script enables parallel processing of multiple samples:
+
+```bash
+# Process samples from YAML configuration
+python ica_batch_processor.py "My Project" batch_samples.yaml \
+    --max-concurrent 5
+```
+
+Example batch configuration (`batch_samples.yaml`):
+```yaml
+- sample_id: "sample1"
+  data_folder: "/data/sample1"
+  pipeline: "dragen-germline"
+  reference: "hg38"
+  custom_params:
+    enable-duplicate-marking: true
+    vc-enable-gatk-acceleration: true
+
+- sample_id: "sample2"
+  data_folder: "/data/sample2"
+  pipeline: "dragen-rna"
+  reference: "hg38"
+  custom_params:
+    enable-rna-gene-fusion: true
+```
+
+The batch processor will:
+1. Upload each sample's data
+2. Generate appropriate pipeline parameters
+3. Run the specified pipeline
+4. Track progress and generate a summary report
+
+### Error Handling and Logging
+
+All utility scripts include comprehensive error handling and logging:
+
+- Logs are written to script-specific log files (e.g., `ica_monitor.log`)
+- Detailed error messages and stack traces
+- Progress updates and status changes
+- Resource usage statistics
+
+### Best Practices
+
+1. **Storage Management**:
+   - Regularly archive or clean up old data
+   - Monitor storage usage and set up alerts
+   - Use appropriate thresholds for your project
+
+2. **Pipeline Monitoring**:
+   - Set up email/Slack notifications for important events
+   - Monitor long-running pipelines
+   - Track resource usage and costs
+
+3. **Batch Processing**:
+   - Use YAML for complex sample configurations
+   - Adjust concurrent processing based on system resources
+   - Monitor the batch processing logs
 
 ## License
 

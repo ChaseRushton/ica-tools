@@ -1,0 +1,25 @@
+# Example batch processing configuration
+- sample_id: "sample1"
+  data_folder: "/data/sample1"
+  pipeline: "dragen-germline"
+  reference: "hg38"
+  custom_params:
+    enable-duplicate-marking: true
+    vc-enable-gatk-acceleration: true
+
+- sample_id: "sample2"
+  data_folder: "/data/sample2"
+  pipeline: "dragen-rna"
+  reference: "hg38"
+  custom_params:
+    enable-rna-gene-fusion: true
+    rna-gene-fusion-min-support: 2
+
+- sample_id: "sample3"
+  data_folder: "/data/sample3"
+  pipeline: "dragen-enrichment"
+  reference: "hg38"
+  target_bed: "/reference-data/hg38/exome_targets.bed"
+  custom_params:
+    vc-target-bed-padding: 100
+    enable-cnv: true

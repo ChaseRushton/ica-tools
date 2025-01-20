@@ -1,0 +1,17 @@
+# Email configuration
+email_to: "user@example.com"
+smtp_host: "smtp.gmail.com"
+smtp_port: 587
+smtp_user: "your-email@gmail.com"
+smtp_pass: "${SMTP_PASSWORD}"  # Set this in environment variable
+
+# Slack configuration (optional)
+slack_webhook: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+
+# Monitoring thresholds
+storage_threshold: 90  # Percentage
+cost_threshold: 1000  # USD
+check_intervals:
+  pipeline: 300  # 5 minutes
+  storage: 3600  # 1 hour
+  costs: 86400  # 1 day
