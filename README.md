@@ -1,4 +1,4 @@
-# ICA Tools 🧬
+# ICA Tools 
 
 [![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/ChaseRushton/ica-tools)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Quick Navigation
+## Quick Navigation
 - [Features](#-features)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
@@ -20,21 +20,22 @@
 
 ---
 
-## 🔄 Workflow Overview
+## Workflow Overview
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph LR
     A[Data Upload] -->|Validation| B[Pipeline Execution]
     B -->|Monitoring| C[Results Download]
     C -->|Transformation| D[PCD Integration]
     
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#bfb,stroke:#333,stroke-width:2px
-    style D fill:#fbb,stroke:#333,stroke-width:2px
+    style A fill:#0366d6,stroke:#58a6ff,stroke-width:2px,color:#ffffff
+    style B fill:#28a745,stroke:#3fb950,stroke-width:2px,color:#ffffff
+    style C fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
+    style D fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
 ```
 
-## ✨ Features
+## Features
 
 <table>
 <tr>
@@ -43,63 +44,64 @@ graph LR
 <th>Status</th>
 </tr>
 <tr>
-<td>📤 <b>Data Upload</b></td>
+<td> Data Upload</td>
 <td>
 • Smart folder validation<br/>
 • Session management<br/>
 • Progress tracking<br/>
 • Error recovery
 </td>
-<td>✅</td>
+<td></td>
 </tr>
 <tr>
-<td>⚡ <b>Pipeline Execution</b></td>
+<td> Pipeline Execution</td>
 <td>
 • Parameter validation<br/>
 • Resource monitoring<br/>
 • Status tracking<br/>
 • Error handling
 </td>
-<td>✅</td>
+<td></td>
 </tr>
 <tr>
-<td>📥 <b>Results Download</b></td>
+<td> Results Download</td>
 <td>
 • Incremental downloads<br/>
 • Checksum verification<br/>
 • Output organization<br/>
 • Resume capability
 </td>
-<td>✅</td>
+<td></td>
 </tr>
 <tr>
-<td>🔌 <b>PCD Integration</b></td>
+<td> PCD Integration</td>
 <td>
 • Data transformation<br/>
 • Event handling<br/>
 • Error management<br/>
 • Real-time sync
 </td>
-<td>🚧</td>
+<td></td>
 </tr>
 </table>
 
-## 🛠️ System Architecture
+## System Architecture
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph TD
-    subgraph Client
+    subgraph Client["Client"]
         A[CLI Tools] --> B[API Client]
         C[Config] --> B
     end
     
-    subgraph ICA
+    subgraph ICA["ICA"]
         D[Data Storage]
         E[Pipeline Engine]
         F[Results]
     end
     
-    subgraph PCD
+    subgraph PCD["PCD"]
         G[Data Processing]
         H[Analysis]
         I[Reporting]
@@ -114,13 +116,16 @@ graph TD
     G --> H
     H --> I
     
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style D,E,F fill:#bfb,stroke:#333,stroke-width:2px
-    style G,H,I fill:#fbb,stroke:#333,stroke-width:2px
+    style A fill:#0366d6,stroke:#58a6ff,stroke-width:2px,color:#ffffff
+    style B fill:#28a745,stroke:#3fb950,stroke-width:2px,color:#ffffff
+    style D,E,F fill:#5319e7,stroke:#8957e5,stroke-width:2px,color:#ffffff
+    style G,H,I fill:#d73a49,stroke:#f97583,stroke-width:2px,color:#ffffff
+    
+    classDef subgraph-c fill:#161b22,stroke:#30363d,stroke-width:2px;
+    class Client,ICA,PCD subgraph-c;
 ```
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 <table>
 <tr>
@@ -155,9 +160,10 @@ graph TD
 </tr>
 </table>
 
-## 📅 Development Timeline
+## Development Timeline
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 gantt
     title Development Roadmap
     dateFormat  YYYY-MM-DD
@@ -290,6 +296,7 @@ gantt
 
 ### Phase Overview
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph LR
     A[Upload Automation] --> B[Download Automation]
     B --> C[Pipeline Automation]
