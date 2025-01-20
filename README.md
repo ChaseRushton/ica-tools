@@ -69,6 +69,29 @@ python ica_cli_download.py "My Project" ANALYSIS_ID ./results --no-wait
 python ica_cli_download.py "My Project" ANALYSIS_ID ./results --polling-interval 120
 ```
 
+### 6. ICA CLI Complete Workflow
+`ica_cli_workflow.py` - Run a complete workflow: upload data, start pipeline, and download results.
+
+#### Usage
+```bash
+# Basic usage
+python ica_cli_workflow.py ./input_data "My Project" "DRAGEN Pipeline" ./results
+
+# Full example with all options
+python ica_cli_workflow.py ./sequencing_data "My Project" "DRAGEN Pipeline" ./results \
+    --folder-name "Sample_Jan2025" \
+    --params-file examples/dragen_params.json \
+    --analysis-name "DRAGEN Analysis Jan2025" \
+    --polling-interval 120
+```
+
+The workflow script will:
+1. Upload your input folder to ICA
+2. Start the specified pipeline
+3. Monitor the pipeline execution
+4. Download results when complete
+5. Provide real-time status updates
+
 ## Complete CLI Workflow Example
 
 Here's a complete example of running a DRAGEN analysis using the CLI-based tools:
@@ -82,7 +105,7 @@ python ica_cli_upload.py ./sequencing_data "My Project" --folder-name "Sample_Ja
 ```bash
 python ica_cli_pipeline.py "My Project" "DRAGEN Pipeline" "Sample_Jan2025" \
     --params-file examples/dragen_params.json \
-    --analysis-name "DRAGEN Analysis Jan2025"
+    --analysis-name "DRAGEN Analysis Jan 2025"
 ```
 
 3. Download the results when complete:
